@@ -3,7 +3,7 @@
     "displayName": "%typescriptExplorer.title%",
     "description": "Full type information for variables, components, functions, and more in TypeScript projects!",
     "publisher": "mxsdev",
-    "version": "0.4.2",
+    "version": "0.4.4",
     "preview": true,
     "private": true,
     "icon": "resources/logo.png",
@@ -114,6 +114,11 @@
         },
         "commands": [
             {
+                "command": "typescriptExplorer.copyTypeAsTypescriptType",
+                "title": "Copy Type as TS",
+                "category": "%typescriptExplorer.title%"
+            },
+            {
                 "title": "Refresh Type Tree",
                 "command": "typescriptExplorer.typeTree.view.refresh",
                 "category": "%typescriptExplorer.title%",
@@ -201,6 +206,11 @@
         ],
         "menus": {
             "view/title": [
+                {
+                    "command": "typescriptExplorer.copyTypeAsTypescriptType",
+                    "when": "view == type-tree",
+                    "group": "navigation@4"
+                },
                 {
                     "command": "typescriptExplorer.typeTree.view.find",
                     "when": "view == type-tree",

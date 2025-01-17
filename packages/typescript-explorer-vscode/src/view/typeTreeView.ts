@@ -41,6 +41,10 @@ export class TypeTreeProvider implements vscode.TreeDataProvider<TypeTreeItem> {
         this._onDidChangeTreeData.fire()
     }
 
+    public getTypeInfoResolver() {
+        return this.typeInfoResolver
+    }
+
     async getTreeItem(element: TypeTreeItem) {
         if (element.typeInfo.error) {
             return element

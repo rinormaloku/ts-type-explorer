@@ -11,7 +11,7 @@ export const stateManager = new StateManager()
 export function activate(context: vscode.ExtensionContext) {
     const viewProviders = createAndRegisterViews(context, stateManager)
 
-    registerCommands(context)
+    registerCommands(context, stateManager)
     registerConfig(context, viewProviders)
 
     stateManager.init(context, viewProviders)
