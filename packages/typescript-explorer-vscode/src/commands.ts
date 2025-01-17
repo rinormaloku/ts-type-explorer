@@ -68,7 +68,8 @@ async function copyTypeAsTypescriptType(stateManager: StateManager) {
     try {
         const localizedTypeInfo = await typeInfoResolver.localize(typeInfo)
         const flattenedType = await generateFlattenedTypeDefinition(localizedTypeInfo, typeInfoResolver)
-        await vscode.env.clipboard.writeText(flattenedType)
+        // @ts-ignore
+        await formatAndCopyToClipboard(`type ${typeInfo.symbolMeta.name} = ${flattenedType}`)
         vscode.window.showInformationMessage("Flattened type copied to clipboard!")
     } catch (error) {
         vscode.window.showErrorMessage("Failed to copy type information.")
@@ -179,4 +180,37 @@ async function generateFlattenedTypeDefinition(
     }
 
     return 'any'
+}
+
+async function formatAndCopyToClipboard(content: string) {
+    // Create a temporary untitled document with TypeScript language
+    const document = await vscode.workspace.openTextDocument({
+        language: 'typescript',
+        content: content
+    });
+
+    // Format the document using VSCode's formatting provider
+    const formatted = await vscode.commands.executeCommand(
+        'vscode.executeFormatDocumentProvider',
+        document.uri
+    ) as vscode.TextEdit[];
+
+    // Apply the formatting edits
+    const edit = new vscode.WorkspaceEdit();
+    if (formatted) {
+        edit.set(document.uri, formatted);
+        await vscode.workspace.applyEdit(edit);
+    }
+
+    // Get the formatted text
+    const formattedText = document.getText();
+
+    // Copy to clipboard
+    await vscode.env.clipboard.writeText(formattedText);
+
+    // Close the temporary document
+    // Briefly show the document to make its editor active
+    await vscode.window.showTextDocument(document.uri, { preview: true, preserveFocus: false });
+    // Immediately close the active editor
+    await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor');
 }
